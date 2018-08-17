@@ -23,8 +23,9 @@ Dispensing money should reduce the amount of available cash in the
 machine.
 Failure to dispense money due to an error should not reduce the amount of
 available cash in the machine.
-#Build
+
+# Build
 mvn package
 mvn compile
-#Run
+# Run
 java -cp target/theATMProject-1.0-SNAPSHOT.jar jk.projects.main.Main
