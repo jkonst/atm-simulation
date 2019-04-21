@@ -1,14 +1,11 @@
 package jk.projects.model;
 
-/**
- * Created by JK on 8/5/2018.
- * This is for personal use. All Rights Reserved.
- */
+
 public class MachineATM {
     private double amount;
     private int fifties;
     private int twenties;
-    private static MachineATM instance = new MachineATM();
+    private static MachineATM instance = null;
 
     private MachineATM(){}
 
@@ -23,18 +20,37 @@ public class MachineATM {
         int rest = (int) amount % 100;
         int givenTwenties = 0;
         int givenFifties = 0;
-        for (int i=1; i <= givenHundreds; i++) {
-            if (i % 2 == 0) {
-                givenTwenties += 5;
+
+        givenFifties = givenHundreds * 2;
+        while(rest >= 20) {
+            if (rest % 50 == 0) {
+                givenFifties += 1;
+                rest -= rest / 50;
+            }
+            else if (rest % 20 == 0) {
+                int noOf20s = rest /20;
+                givenTwenties += noOf20s;
+                rest -= noOf20s * 20;
             } else {
-                givenFifties += 2;
+                if (rest > 50) {
+                    int mod50 = rest % 50;
+                    if (mod50 >= 20 && mod50 < 30 || mod50 >= 40 && mod50 < 50) {
+                        givenFifties += 1;
+                        givenTwenties += mod50 / 20;
+                        rest -= 50 + (mod50 / 20) * 20;
+                    } else {
+                        int noOf20s = rest / 20;
+                        givenTwenties += noOf20s;
+                        rest -= noOf20s * 20;
+                    }
+                } else {
+                    int noOf20s = rest / 20;
+                    givenTwenties += noOf20s;
+                    rest -= noOf20s * 20;
+                }
             }
         }
-        if (rest % 50 == 0) {
-            givenFifties += rest / 50;
-        } else if (rest % 20 == 0) {
-            givenTwenties += rest / 20;
-        }
+
         this.twenties = givenTwenties;
         this.fifties = givenFifties;
 
@@ -51,9 +67,17 @@ public class MachineATM {
     }
 
     public static MachineATM getInstance() {
+        if (instance == null) {
+            instance = new MachineATM();
+        }
         return instance;
     }
 
+    /**
+     * This method checks whether the available notes of 50s and 20s can cover the specific amount
+     * @param amount
+     * @return
+     */
     public boolean isAmtValid(double amount) {
         if (amount % 50 == 0 && amount % 20 == 0) {
 
